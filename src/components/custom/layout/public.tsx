@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { ReactNode } from "react";
+import { SignedOut, SignInButton, SignedIn, UserButton } from "@clerk/nextjs";
 
 type Prop = {
   children: ReactNode;
@@ -17,7 +18,7 @@ export default function PublicLayout({ children }: Prop) {
   return (
     <div className="flex min-h-screen w-full flex-col">
       <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
-        <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
+        <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:flex-1 md:items-center md:gap-5 md:text-sm lg:gap-6">
           <Link
             href="#"
             className="flex items-center gap-2 text-lg font-semibold md:text-base"
@@ -71,9 +72,21 @@ export default function PublicLayout({ children }: Prop) {
         >
           {process.env.NEXT_PUBLIC_APP_NAME}
         </Link>
+
+        <div className="flex-1"></div>
+
+        <div>
+          <SignedOut>
+            <Button asChild>
+              <SignInButton />
+            </Button>
+          </SignedOut>
+          <SignedIn>
+            <UserButton />
+          </SignedIn>
+        </div>
       </header>
-			{ children }
-      
+      {children}
     </div>
   );
 }
