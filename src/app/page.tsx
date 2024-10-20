@@ -14,7 +14,7 @@ export default function Home() {
             Simplify your rental process with our innovative SaaS solution
           </p>
           <Button asChild className="mt-4 max-w-32">
-            <Link href="/sign-in">Get Started</Link>
+            <Link href={ process.env.NEXT_PUBLIC_CLERK_SIGN_IN_URL as string }>Get Started</Link>
           </Button>
         </section>
       </main>
