@@ -16,14 +16,24 @@ datasource db {
 }
 
 model Property {
-  id          Int    @id @default(autoincrement())
-  name        String @db.VarChar(255)
-  monthlyRent Int?
+  id           Int      @id @default(autoincrement())
+  user_id      String
+  name         String   @db.VarChar(255)
+  monthly_rent Int?
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+  tenant       Tenant?
 }
 
 model Tenant {
-  id         Int     @id @default(autoincrement())
-  name       String  @db.VarChar(255)
-  email      String? @unique @db.VarChar(255)
-  propertyId Int?
+  id            Int      @id @default(autoincrement())
+  user_id       String
+  property_id   Int?     @unique
+  name          String   @db.VarChar(255)
+  billing_date  DateTime
+  starting_date DateTime
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  property Property? @relation(fields: [property_id], references: [id])
 }
