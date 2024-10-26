@@ -28,10 +28,17 @@ export default function AuthLayout({ children }: Prop) {
           </Link>
 
           <Link
-            href="#"
+            href="/dashboard"
             className="text-muted-foreground transition-colors hover:text-foreground"
           >
             Dashboard
+          </Link>
+
+          <Link
+            href="/properties"
+            className="text-muted-foreground transition-colors hover:text-foreground"
+          >
+            Properties
           </Link>
 
           <Link
@@ -67,10 +74,17 @@ export default function AuthLayout({ children }: Prop) {
                 </Link>
               </SheetTitle>
               <Link
-                href="#"
+                href="/dashboard"
                 className="text-muted-foreground hover:text-foreground"
               >
                 Dashboard
+              </Link>
+
+              <Link
+                href="/properties"
+                className="text-muted-foreground hover:text-foreground"
+              >
+                Properties
               </Link>
 
               <Link
