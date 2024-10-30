@@ -1,6 +1,11 @@
 import AuthLayout from "@/components/custom/layout/auth";
 import { columns, Property } from "./columns";
 import DataTable from "./data-table";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: `${process.env.NEXT_PUBLIC_APP_NAME} - Properties`,
+};
 
 async function getData(): Promise<Property[]> {
   return Array.from({ length: 25 }, (_, i) => i).map((i) => ({

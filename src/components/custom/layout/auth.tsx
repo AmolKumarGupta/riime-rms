@@ -117,7 +117,7 @@ export default function AuthLayout({ children }: Prop) {
           </SignedIn>
         </div>
       </header>
-      <main className="container mx-auto">{children}</main>
+      <main className="container mx-auto px-2 md:px-8 py-8 md:py-8">{children}</main>
     </div>
   );
 }
