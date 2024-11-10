@@ -16,9 +16,9 @@ import {
 import { CaretSortIcon } from "@radix-ui/react-icons";
 
 export type Property = {
-  id: string;
+  id: number;
   name: string;
-  monthly_rent: number;
+  monthly_rent: number | null;
 };
 
 export const columns: ColumnDef<Property>[] = [
@@ -63,7 +63,7 @@ export const columns: ColumnDef<Property>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
+              onClick={() => navigator.clipboard.writeText(payment.id.toString())}
             >
               Copy payment ID
             </DropdownMenuItem>

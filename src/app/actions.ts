@@ -31,7 +31,6 @@ export async function createProperty(formData: FormData) {
     })
 
   } catch (e) {
-    console.log(e);
     return { status: 500, error: "Something went wrong" }
   }
 

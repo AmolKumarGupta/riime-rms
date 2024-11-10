@@ -1,27 +1,21 @@
 import AuthLayout from "@/components/custom/layout/auth";
-import { columns, Property } from "./columns";
-import DataTable from "./data-table";
 import { Metadata } from "next";
+import TableSkeleton from "./_components/TableSkeleton";
+import dynamic from "next/dynamic";
 
 export const metadata: Metadata = {
   title: `${process.env.NEXT_PUBLIC_APP_NAME} - Properties`,
 };
 
-async function getData(): Promise<Property[]> {
-  return Array.from({ length: 25 }, (_, i) => i).map((i) => ({
-    id: i.toString(),
-    name: `Property ${1000 * i}`,
-    monthly_rent: 1000 * i,
-  }));
-}
+const Table = dynamic(() => import("./table"), {
+  loading: () => <TableSkeleton />,
+});
 
-export default async function Page() {
-  const data = await getData();
-
+export default function Page() {
   return (
     <AuthLayout>
       <main className="py-10 px-2">
-        <DataTable columns={columns} data={data} />
+        <Table />
       </main>
     </AuthLayout>
   );
