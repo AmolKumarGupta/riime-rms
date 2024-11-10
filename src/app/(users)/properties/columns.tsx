@@ -35,9 +35,7 @@ export const columns: ColumnDef<Property>[] = [
         </Button>
       );
     },
-    cell: ({ row }) => (
-      <div className="px-4">{row.getValue("id")}</div>
-    ),
+    cell: ({ row }) => <div className="px-4">{row.getValue("id")}</div>,
   },
   {
     accessorKey: "name",
@@ -60,16 +58,15 @@ export const columns: ColumnDef<Property>[] = [
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
+
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id.toString())}
-            >
-              Copy payment ID
+            {/* <DropdownMenuSeparator /> */}
+
+            <DropdownMenuItem className="cursor-pointer">Edit</DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer">
+              Delete
             </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
