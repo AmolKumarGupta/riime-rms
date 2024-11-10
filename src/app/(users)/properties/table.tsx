@@ -1,17 +1,11 @@
 "use server";
 
-import { prisma } from "@/lib/db";
 import { columns, Property } from "./columns";
 import DataTable from "./data-table";
+import { property } from "@/db/facades";
 
 export default async function Table() {
-  const data = await prisma.property.findMany({
-    select: {
-      id: true,
-      name: true,
-      monthly_rent: true,
-    },
-  });
+  const data = await property.tableQuery();
 
   return <DataTable columns={columns} data={data} />;
 }

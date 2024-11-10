@@ -1,7 +1,7 @@
 'use server'
 
+import { property } from '@/db/facades';
 import { propertySchema } from '@/form-schema';
-import { prisma } from '@/lib/db';
 import { auth } from '@clerk/nextjs/server';
 
 export async function createProperty(formData: FormData) {
@@ -22,13 +22,11 @@ export async function createProperty(formData: FormData) {
   }
 
   try {
-    await prisma.property.create({
-      data: {
-        user_id: userId,
-        name: data.name as string,
-        monthly_rent: data.monthly_rent ? parseInt(data.monthly_rent as string) : 0
-      }
-    })
+    await property.create({
+      user_id: userId,
+      name: data.name as string,
+      monthly_rent: data.monthly_rent ? parseInt(data.monthly_rent as string) : 0
+    });
 
   } catch (e) {
     return { status: 500, error: "Something went wrong" }
