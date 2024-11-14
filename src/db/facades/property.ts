@@ -11,7 +11,20 @@ export async function create(data: {
 /**
  * Fetches data for all properties for table component
  */
-export async function tableQuery() {
+export async function tableQuery(userId: string|null = null) {
+  if (userId) {
+    return await client.property.findMany({
+      select: {
+        id: true,
+        name: true,
+        monthly_rent: true,
+      },
+      where: {
+        user_id: userId
+      }
+    });
+  }
+
   return await client.property.findMany({
     select: {
       id: true,
