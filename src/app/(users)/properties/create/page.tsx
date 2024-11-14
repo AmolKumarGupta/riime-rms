@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <AuthLayout>
-      <main className="py-8 px-2">
+      <main className="sm:pt-8 pb-8 px-2">
         <h2 className="scroll-m-20 text-2xl sm:text-3xl font-semibold tracking-tight first:mt-0">
           Create a new property
         </h2>

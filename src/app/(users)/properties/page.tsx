@@ -14,7 +14,7 @@ const Table = dynamic(() => import("./table"), {
 export default function Page() {
   return (
     <AuthLayout>
-      <main className="py-10 px-2">
+      <main className="sm:pt-10 pb-10 px-2">
         <Table />
       </main>
     </AuthLayout>
