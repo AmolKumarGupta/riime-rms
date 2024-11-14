@@ -20,7 +20,6 @@ import { useRef, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
-import { revalidatePath } from "next/cache";
 
 export default function CreateForm() {
   const formRef = useRef(null);
@@ -47,7 +46,6 @@ export default function CreateForm() {
     const response = await createProperty(fd);
 
     if (response.status == 201) {
-      revalidatePath("/properties");
       return router.push("/properties");
     }
 

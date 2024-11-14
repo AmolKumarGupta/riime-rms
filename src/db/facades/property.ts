@@ -1,3 +1,4 @@
+import { revalidatePath } from "next/cache";
 import { client } from "../client";
 
 export async function create(data: {
@@ -5,7 +6,10 @@ export async function create(data: {
   name: string
   monthly_rent: number
 }) {
-  return await client.property.create({ data })
+  const property = await client.property.create({ data })
+  revalidatePath("/properties");
+
+  return property;
 }
 
 /**
