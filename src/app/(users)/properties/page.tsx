@@ -1,6 +1,6 @@
 import AuthLayout from "@/components/custom/layout/auth";
 import { Metadata } from "next";
-import TableSkeleton from "./_components/TableSkeleton";
+import TableSkeleton from "./_components/table-skeleton";
 import dynamic from "next/dynamic";
 
 export const metadata: Metadata = {

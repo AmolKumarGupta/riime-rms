@@ -12,28 +12,32 @@ export async function create(data: {
   return property;
 }
 
+export async function remove(id: number) {
+  await client.property.delete({
+    where: { id }
+  })
+
+  revalidatePath('/properties');
+}
+
 /**
  * Fetches data for all properties for table component
  */
-export async function tableQuery(userId: string|null = null) {
-  if (userId) {
-    return await client.property.findMany({
-      select: {
-        id: true,
-        name: true,
-        monthly_rent: true,
-      },
-      where: {
-        user_id: userId
-      }
-    });
-  }
-
+export async function tableQuery(userId: string) {
   return await client.property.findMany({
     select: {
       id: true,
       name: true,
       monthly_rent: true,
     },
+    where: {
+      user_id: userId
+    }
   });
+}
+
+export async function first(id: number) {
+  return await client.property.findUnique({
+    where: { id }
+  })
 }
