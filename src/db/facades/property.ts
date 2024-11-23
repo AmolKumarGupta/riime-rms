@@ -3,10 +3,18 @@ import { client } from "../client";
 
 export async function create(data: {
   user_id: string,
-  name: string
+  name: string,
   monthly_rent: number
 }) {
   const property = await client.property.create({ data })
+  revalidatePath("/properties");
+
+  return property;
+}
+
+export async function update(id: number, data: { name: string, monthly_rent: number }) {
+  const property = await client.property.update({ where: { id }, data });
+
   revalidatePath("/properties");
 
   return property;

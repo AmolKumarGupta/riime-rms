@@ -27,6 +27,16 @@ import {
 import { deleteProperty } from "../actions";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import UpdateForm from "./update-form";
 
 export type Property = {
   id: number;
@@ -63,82 +73,113 @@ export const columns: ColumnDef<Property>[] = [
     cell: ({ row }) => {
       const { toast } = useToast();
       const [open, setOpen] = useState(false);
+      const [openSheet, setOpenSheet] = useState(false);
       const [isDeleting, setIsDeleting] = useState(false);
 
+      const handleDelete = async (e: any) => {
+        try {
+          setIsDeleting(true);
+          await deleteProperty(row.getValue("id"));
+          setOpen(false);
+
+          toast({
+            title: "Property deleted",
+            description: "The property has been successfully deleted.",
+          });
+        } catch (err) {
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description: "Something went wrong",
+          });
+        }
+
+        setIsDeleting(false);
+      };
+
       return (
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <span className="sr-only">Open menu</span>
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
 
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              {/* <DropdownMenuSeparator /> */}
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
-              <DropdownMenuItem className="cursor-pointer">
-                Edit
-              </DropdownMenuItem>
+            <DropdownMenuItem
+              className="cursor-pointer"
+              onSelect={() => setOpenSheet(true)}
+            >
+              Edit
+            </DropdownMenuItem>
 
-              <DialogTrigger asChild>
-                <DropdownMenuItem className="cursor-pointer">
-                  Delete
-                </DropdownMenuItem>
-              </DialogTrigger>
-            </DropdownMenuContent>
-          </DropdownMenu>
+            <DropdownMenuItem
+              className="cursor-pointer"
+              onSelect={() => setOpen(true)}
+            >
+              Delete
+            </DropdownMenuItem>
+          </DropdownMenuContent>
 
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Delete Property</DialogTitle>
-              <DialogDescription className="sr-only">
-                delete property
-              </DialogDescription>
-            </DialogHeader>
+          <Dialog open={open} onOpenChange={setOpen}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Delete Property</DialogTitle>
+                <DialogDescription className="sr-only">
+                  delete property
+                </DialogDescription>
+              </DialogHeader>
 
-            <div>Do you really want to delete '{row.getValue("name")}' ?</div>
+              <div>Do you really want to delete '{row.getValue("name")}' ?</div>
 
-            <DialogFooter className="gap-2 justify-between sm:justify-between">
-              <DialogClose asChild>
-                <Button type="button" variant="secondary">
-                  Close
+              <DialogFooter className="gap-2 justify-between sm:justify-between">
+                <DialogClose asChild>
+                  <Button type="button" variant="secondary">
+                    Close
+                  </Button>
+                </DialogClose>
+
+                <Button
+                  type="button"
+                  variant="destructive"
+                  onClick={handleDelete}
+                >
+                  {isDeleting ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Deleting
+                    </>
+                  ) : (
+                    <>Yes</>
+                  )}
                 </Button>
-              </DialogClose>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
 
-              <Button
-                type="button"
-                variant="destructive"
-                onClick={async (e) => {
-                  try {
-                    setIsDeleting(true);
-                    await deleteProperty(row.getValue("id"));
-                    setOpen(false);
+          <Sheet open={openSheet} onOpenChange={setOpenSheet}>
+            <SheetContent className="w-full sm:w-3/4">
+              <SheetHeader>
+                <SheetTitle>Edit {row.getValue("name")}</SheetTitle>
+                <SheetDescription className="sr-only">
+                  Edit this property
+                </SheetDescription>
+              </SheetHeader>
 
-                  } catch (err) {
-                    toast({
-                      variant: "destructive",
-                      title: "Error",
-                      description: "Something went wrong",
-                    });
-                  }
-                  
-                  setIsDeleting(false);
+              <UpdateForm
+                className="mt-4"
+                property={{
+                  id: row.getValue("id"),
+                  name: row.getValue("name"),
+                  monthly_rent: row.getValue("monthly_rent"),
                 }}
-              >
-                {isDeleting ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Deleting
-                  </>
-                ) : (
-                  <>Yes</>
-                )}
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+                onSave={() => setOpenSheet(false)}
+              />
+            </SheetContent>
+          </Sheet>
+        </DropdownMenu>
       );
     },
   },
