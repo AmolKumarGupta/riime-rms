@@ -28,10 +28,17 @@ export default function AuthLayout({ children }: Prop) {
           </Link>
 
           <Link
-            href="#"
+            href="/dashboard"
             className="text-muted-foreground transition-colors hover:text-foreground"
           >
             Dashboard
+          </Link>
+
+          <Link
+            href="/properties"
+            className="text-muted-foreground transition-colors hover:text-foreground"
+          >
+            Properties
           </Link>
 
           <Link
@@ -67,10 +74,17 @@ export default function AuthLayout({ children }: Prop) {
                 </Link>
               </SheetTitle>
               <Link
-                href="#"
+                href="/dashboard"
                 className="text-muted-foreground hover:text-foreground"
               >
                 Dashboard
+              </Link>
+
+              <Link
+                href="/properties"
+                className="text-muted-foreground hover:text-foreground"
+              >
+                Properties
               </Link>
 
               <Link
@@ -103,7 +117,7 @@ export default function AuthLayout({ children }: Prop) {
           </SignedIn>
         </div>
       </header>
-      <main className="container mx-auto">{children}</main>
+      <main className="container mx-auto px-2 md:px-8 py-8 md:py-8">{children}</main>
     </div>
   );
 }
