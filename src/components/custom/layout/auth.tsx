@@ -42,10 +42,10 @@ export default function AuthLayout({ children }: Prop) {
           </Link>
 
           <Link
-            href="#"
+            href="/tenants"
             className="text-muted-foreground transition-colors hover:text-foreground"
           >
-            Renters
+            Tenants
           </Link>
         </nav>
 
@@ -88,10 +88,10 @@ export default function AuthLayout({ children }: Prop) {
               </Link>
 
               <Link
-                href="#"
+                href="/tenants"
                 className="text-muted-foreground hover:text-foreground"
               >
-                Renters
+                Tenants
               </Link>
             </nav>
           </SheetContent>

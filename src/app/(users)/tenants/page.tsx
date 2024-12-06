@@ -1,10 +1,10 @@
 import AuthLayout from "@/components/custom/layout/auth";
 import { Metadata } from "next";
-import TableSkeleton from "@/components/custom/table-skeleton";
 import dynamic from "next/dynamic";
+import TableSkeleton from "@/components/custom/table-skeleton";
 
 export const metadata: Metadata = {
-  title: `${process.env.NEXT_PUBLIC_APP_NAME} - Properties`,
+  title: `${process.env.NEXT_PUBLIC_APP_NAME} - Tenants`,
 };
 
 const Table = dynamic(() => import("./table"), {
