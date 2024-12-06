@@ -35,6 +35,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import UpdateForm from "./update-form";
+import { deleteTenant } from "../actions";
 
 export type Tenant = {
   id: number;
@@ -67,17 +69,17 @@ export const columns: ColumnDef<Tenant>[] = [
   {
     accessorKey: "property_id",
     header: "Property",
-    cell: () => null
+    cell: () => null,
   },
   {
     accessorKey: "billing_date",
     header: "Billing Date",
-    cell: ({ row }) => (new Date(row.getValue("billing_date"))).toDateString(),
+    cell: ({ row }) => new Date(row.getValue("billing_date")).toDateString(),
   },
   {
     accessorKey: "starting_date",
     header: "Starting Date",
-    cell: ({ row }) => (new Date(row.getValue("starting_date"))).toDateString(),
+    cell: ({ row }) => new Date(row.getValue("starting_date")).toDateString(),
   },
   {
     id: "actions",
@@ -90,7 +92,7 @@ export const columns: ColumnDef<Tenant>[] = [
       const handleDelete = async (e: any) => {
         try {
           setIsDeleting(true);
-          // await deleteTenant(row.getValue("id"));
+          await deleteTenant(row.getValue("id"));
           setOpen(false);
 
           toast({
@@ -179,15 +181,17 @@ export const columns: ColumnDef<Tenant>[] = [
                 </SheetDescription>
               </SheetHeader>
 
-              {/* <UpdateForm
+              <UpdateForm
                 className="mt-4"
                 tenant={{
                   id: row.getValue("id"),
                   name: row.getValue("name"),
-                  monthly_rent: row.getValue("monthly_rent"),
+                  billing_date: row.getValue("billing_date"),
+                  starting_date: row.getValue("starting_date"),
+                  property_id: row.getValue("property_id"),
                 }}
                 onSave={() => setOpenSheet(false)}
-              /> */}
+              />
             </SheetContent>
           </Sheet>
         </DropdownMenu>
