@@ -1,4 +1,3 @@
-import AuthLayout from "@/components/custom/layout/auth";
 import { Metadata } from "next";
 import TableSkeleton from "@/components/custom/table-skeleton";
 import dynamic from "next/dynamic";
@@ -13,10 +12,8 @@ const Table = dynamic(() => import("./table"), {
 
 export default function Page() {
   return (
-    <AuthLayout>
-      <main className="sm:pt-10 pb-10 px-2">
-        <Table />
-      </main>
-    </AuthLayout>
+    <main className="sm:pt-10 pb-10 px-2">
+      <Table />
+    </main>
   );
 }
