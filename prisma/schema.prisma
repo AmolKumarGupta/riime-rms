@@ -16,13 +16,25 @@ datasource db {
 }
 
 model Property {
-  id           Int      @id @default(autoincrement())
+  id           Int           @id @default(autoincrement())
   user_id      String
-  name         String   @db.VarChar(255)
+  name         String        @db.VarChar(255)
   monthly_rent Int?
-  created_at   DateTime @default(now())
-  updated_at   DateTime @updatedAt
+  created_at   DateTime      @default(now())
+  updated_at   DateTime      @updatedAt
   tenant       Tenant?
+  rentVariant  RentVariant[]
+}
+
+model RentVariant {
+  id          Int      @id @default(autoincrement())
+  property_id Int
+  name        String
+  initial     Int
+  current     Int
+  property    Property @relation(fields: [property_id], references: [id])
+
+  @@index([property_id], type: Hash)
 }
 
 model Tenant {
