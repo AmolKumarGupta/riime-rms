@@ -1,6 +1,6 @@
 "use client";
 
-import { propertySchema } from "@/form-schema";
+import { propertySchema, propertyWithVariantSchema } from "@/form-schema";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -20,6 +20,7 @@ import { useRef, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export default function CreateForm() {
   const formRef = useRef(null);
@@ -27,11 +28,13 @@ export default function CreateForm() {
   const router = useRouter();
   const [pending, setPending] = useState(false);
 
-  const form = useForm<z.infer<typeof propertySchema>>({
-    resolver: zodResolver(propertySchema),
+  const form = useForm<z.infer<typeof propertyWithVariantSchema>>({
+    resolver: zodResolver(propertyWithVariantSchema),
     defaultValues: {
       name: "",
       monthly_rent: 0,
+      electricty_bill_included: true,
+      electricty_initial_value: 0,
     },
   });
 
@@ -40,10 +43,8 @@ export default function CreateForm() {
       return;
     }
 
-    const fd = new FormData(formRef.current);
-
     setPending(true);
-    const response = await createProperty(fd);
+    const response = await createProperty(form.getValues());
 
     if (response.status == 201) {
       return router.push("/properties");
@@ -97,6 +98,38 @@ export default function CreateForm() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Monthly Rent</FormLabel>
+              <FormControl>
+                <Input placeholder="Ex: 1000" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="electricty_bill_included"
+          render={({ field }) => (
+            <FormItem className="flex gap-2 items-center space-y-0">
+              <Checkbox
+                id="electricty_bill_included"
+                checked={field.value}
+                onCheckedChange={field.onChange}
+              />
+              <FormLabel htmlFor="electricty_bill_included">
+                Electricity bill included in monthly rent ?
+              </FormLabel>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="electricty_initial_value"
+          render={({ field }) => (
+            <FormItem hidden={ form.getValues('electricty_bill_included') == true } >
+              <FormLabel>Electricity Initial Value</FormLabel>
               <FormControl>
                 <Input placeholder="Ex: 1000" {...field} />
               </FormControl>
