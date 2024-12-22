@@ -1,18 +1,17 @@
 'use server'
 
-import { property, tenant } from '@/db/facades';
-import { propertySchema, tenantSchema } from '@/form-schema';
+import { property, rentVariant, tenant } from '@/db/facades';
+import { propertySchema, propertyWithVariantSchema, tenantSchema } from '@/form-schema';
 import { auth } from '@clerk/nextjs/server';
+import { z } from 'zod';
 
-export async function createProperty(formData: FormData) {
+export async function createProperty(data: z.infer<typeof propertyWithVariantSchema>) {
   const { userId } = await auth()
   if (!userId) {
     return { status: 401, error: "unauthenticated" }
   }
 
-  const data = Object.fromEntries(formData);
-
-  const validated = propertySchema.safeParse(data);
+  const validated = propertyWithVariantSchema.safeParse(data);
 
   if (!validated.success) {
     const errors = validated.error.flatten().fieldErrors
@@ -22,11 +21,19 @@ export async function createProperty(formData: FormData) {
   }
 
   try {
-    await property.create({
+    const propertyModel = await property.create({
       user_id: userId,
-      name: data.name as string,
-      monthly_rent: data.monthly_rent ? parseInt(data.monthly_rent as string) : 0
+      name: validated.data.name,
+      monthly_rent: validated.data.monthly_rent ? validated.data.monthly_rent : 0
     });
+
+    if (!validated.data.electricty_bill_included) {
+      rentVariant.create(propertyModel.id, {
+        name: "electricity",
+        initial: validated.data.electricty_initial_value,
+        current: validated.data.electricty_initial_value,
+      });
+    }
 
   } catch (e) {
     return { status: 500, error: "Something went wrong" }
