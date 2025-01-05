@@ -15,17 +15,20 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { createProperty, updateProperty } from "@/app/actions";
+import { updateProperty } from "@/app/actions";
 import { useRef, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ClassNameValue } from "tailwind-merge";
-import { Property } from "./columns";
 
 type PageProps = {
-  property: any;
+  property: {
+    id: number;
+    name: string;
+    monthly_rent: number;
+  };
   className: ClassNameValue;
   onSave: CallableFunction | null | undefined;
 };

@@ -1,7 +1,13 @@
 import { revalidatePath } from "next/cache";
 import { client } from "../client";
 
-export async function create(data: { user_id: string; name: string; billing_date: Date; starting_date: Date; }) {
+export async function create(data: {
+  user_id: string;
+  name: string;
+  billing_date: Date;
+  starting_date: Date;
+  property_id: number | null;
+}) {
   const tenant = await client.tenant.create({ data })
   revalidatePath("/tenants");
 
@@ -10,7 +16,7 @@ export async function create(data: { user_id: string; name: string; billing_date
 
 export async function update(
   id: number,
-  data: { name: string, billing_date: Date, starting_date: Date, property_id: number }
+  data: { name: string, billing_date: Date, starting_date: Date, property_id: number | null }
 ) {
   const tenant = await client.tenant.update({ where: { id }, data });
 
@@ -38,9 +44,13 @@ export async function tableQuery(userId: string) {
       billing_date: true,
       starting_date: true,
       property_id: true,
+      property: true,
     },
     where: {
       user_id: userId
+    },
+    orderBy: {
+      id: 'asc'
     }
   });
 }
