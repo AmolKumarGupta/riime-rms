@@ -40,6 +40,9 @@ export async function tableQuery(userId: string) {
     },
     where: {
       user_id: userId
+    },
+    orderBy: {
+      id: 'asc'
     }
   });
 }
@@ -48,4 +51,41 @@ export async function first(id: number) {
   return await client.property.findUnique({
     where: { id }
   })
+}
+
+
+export async function unAssignedProperties(userId: string) {
+  return await client.property.findMany({
+    select: {
+      id: true,
+      name: true
+    },
+    where: {
+      user_id: userId,
+      tenant: null
+    }
+  });
+}
+
+/**
+ * Retrieves a list of properties that are either unassigned or assigned to a specific tenant.
+ */
+export async function unAssignedPropertiesWithTenantProperty(userId: string, tenantId: number) {
+  return await client.property.findMany({
+    select: {
+      id: true,
+      name: true
+    },
+    where: {
+      user_id: userId,
+      OR: [
+        { tenant: null },
+        {
+          tenant: {
+            id: tenantId
+          }
+        }
+      ]
+    }
+  });
 }

@@ -40,3 +40,9 @@ export const tenantSchema = z.object({
     invalid_type_error: "Starting Date must be a date",
   })
 })
+
+export const tenantWithPropertySchema = tenantSchema.extend({
+  property_id: z.coerce.number({
+    required_error: "Property is required"
+  }).nullable()
+})

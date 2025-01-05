@@ -1,6 +1,6 @@
 'use server'
 
-import { tenant } from "@/db/facades";
+import { property, tenant } from "@/db/facades";
 import { auth } from "@clerk/nextjs/server";
 import { notFound, redirect } from "next/navigation";
 
@@ -14,4 +14,11 @@ export async function deleteTenant(id: number) {
 
   await tenant.remove(id);
   redirect('/tenants');
+}
+
+export async function getUnAssignedPropertiesWithTenantProperty(tenantId: number) {
+  const { userId } = auth();
+  if (!userId) return null;
+
+  return await property.unAssignedPropertiesWithTenantProperty(userId, tenantId);
 }

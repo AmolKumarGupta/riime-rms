@@ -1,4 +1,3 @@
-import { revalidatePath } from "next/cache";
 import { client } from "../client";
 
 export async function create(

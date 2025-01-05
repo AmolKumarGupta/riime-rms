@@ -1,6 +1,6 @@
 "use client";
 
-import { tenantSchema } from "@/form-schema";
+import { tenantWithPropertySchema } from "@/form-schema";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -16,7 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { createTenant } from "@/app/actions";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { CalendarIcon, Loader2 } from "lucide-react";
@@ -28,31 +28,41 @@ import {
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
-export default function CreateForm() {
-  const formRef = useRef(null);
+type PageProps = {
+  properties: {
+    id: number;
+    name: string;
+  }[];
+};
+
+export default function CreateForm({ properties }: PageProps) {
   const { toast } = useToast();
   const router = useRouter();
   const [pending, setPending] = useState(false);
 
-  const form = useForm<z.infer<typeof tenantSchema>>({
-    resolver: zodResolver(tenantSchema),
+  const form = useForm<z.infer<typeof tenantWithPropertySchema>>({
+    resolver: zodResolver(tenantWithPropertySchema),
     defaultValues: {
       name: "",
       billing_date: new Date(),
       starting_date: new Date(),
+      property_id: null,
     },
   });
 
   async function onSubmit() {
-    if (!formRef.current) {
-      return;
-    }
-
-    const fd = new FormData(formRef.current);
-
     setPending(true);
-    const response = await createTenant(fd);
+    const response = await createTenant(form.getValues());
 
     if (response.status == 201) {
       return router.push("/tenants");
@@ -78,11 +88,7 @@ export default function CreateForm() {
 
   return (
     <Form {...form}>
-      <form
-        ref={formRef}
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="w-2/3 space-y-6"
-      >
+      <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6">
         <FormField
           control={form.control}
           name="name"
@@ -90,11 +96,47 @@ export default function CreateForm() {
             <FormItem>
               <FormLabel>Tenant Name</FormLabel>
               <FormControl>
-                <Input placeholder="Ex: Jon Doe" {...field} />
+                <Input
+                  placeholder="Ex: Jon Doe"
+                  {...field}
+                  className="w-[240px]"
+                />
               </FormControl>
               <FormDescription>
                 This is your public display name.
               </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="property_id"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Property</FormLabel>
+              <FormControl>
+                <Select onValueChange={field.onChange}>
+                  <SelectTrigger className="w-[240px]">
+                    <SelectValue placeholder="Select a property" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Properties</SelectLabel>
+                      {properties.map((property) => (
+                        <SelectItem
+                          value={property.id.toString()}
+                          key={property.id}
+                        >
+                          {property.name}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </FormControl>
+              <FormDescription>Property can be select anytime.</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -108,7 +150,11 @@ export default function CreateForm() {
               <FormLabel>Billing Date</FormLabel>
               <FormControl>
                 <>
-                  <input type="hidden" name={field.name} value={field.value.toString()} />
+                  <input
+                    type="hidden"
+                    name={field.name}
+                    value={field.value.toString()}
+                  />
                   <Popover>
                     <PopoverTrigger asChild>
                       <Button
@@ -152,7 +198,11 @@ export default function CreateForm() {
               <FormLabel>Starting Date</FormLabel>
               <FormControl>
                 <>
-                  <input type="hidden" name={field.name} value={field.value.toString()} />
+                  <input
+                    type="hidden"
+                    name={field.name}
+                    value={field.value.toString()}
+                  />
                   <Popover>
                     <PopoverTrigger asChild>
                       <Button

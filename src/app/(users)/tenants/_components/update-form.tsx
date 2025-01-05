@@ -1,6 +1,6 @@
 "use client";
 
-import { tenantSchema } from "@/form-schema";
+import { tenantWithPropertySchema } from "@/form-schema";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -16,13 +16,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { updateTenant } from "@/app/actions";
-import { useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { CalendarIcon, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ClassNameValue } from "tailwind-merge";
-import { Tenant } from "./columns";
 import {
   Popover,
   PopoverContent,
@@ -30,33 +29,56 @@ import {
 } from "@/components/ui/popover";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
+import { getUnAssignedPropertiesWithTenantProperty } from "../actions";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 type PageProps = {
-  tenant: any;
+  tenant: {
+    id: number;
+    name: string;
+    billing_date: Date;
+    starting_date: Date;
+    property_id: number | null;
+  };
   className: ClassNameValue;
   onSave: CallableFunction | null | undefined;
 };
 
-export default function UpdateForm({ tenant, className, onSave }: PageProps) {
-  const formRef = useRef(null);
+type SelectPropertyType = {
+  id: number;
+  name: string;
+}[];
+
+export default function UpdateForm({ tenant, onSave }: PageProps) {
   const { toast } = useToast();
   const router = useRouter();
   const [pending, setPending] = useState(false);
+  const [assignableProperties, setAssignableProperties] =
+    useState<SelectPropertyType>([]);
 
-  const form = useForm<z.infer<typeof tenantSchema>>({
-    resolver: zodResolver(tenantSchema),
+  const form = useForm<z.infer<typeof tenantWithPropertySchema>>({
+    resolver: zodResolver(tenantWithPropertySchema),
     defaultValues: tenant,
   });
 
+  useEffect(() => {
+    getUnAssignedPropertiesWithTenantProperty(tenant.id).then((properties) => {
+      if (!properties) return;
+      setAssignableProperties(properties);
+    });
+  }, [tenant.id]);
+
   async function onSubmit() {
-    if (!formRef.current) {
-      return;
-    }
-
-    const fd = new FormData(formRef.current);
-
     setPending(true);
-    const response = await updateTenant(tenant.id, fd);
+    const response = await updateTenant(tenant.id, form.getValues());
     setPending(false);
 
     if (response.status == 200) {
@@ -82,11 +104,7 @@ export default function UpdateForm({ tenant, className, onSave }: PageProps) {
 
   return (
     <Form {...form}>
-      <form
-        ref={formRef}
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="w-2/3 space-y-6"
-      >
+      <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6">
         <FormField
           control={form.control}
           name="name"
@@ -99,6 +117,44 @@ export default function UpdateForm({ tenant, className, onSave }: PageProps) {
               <FormDescription>
                 This is your public display name.
               </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="property_id"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Property</FormLabel>
+              <FormControl>
+                <Select
+                  onValueChange={(val) =>
+                    field.onChange(val === "none" ? "" : val)
+                  }
+                  defaultValue={field.value?.toString()}
+                >
+                  <SelectTrigger className="w-[240px]" tabIndex={0}>
+                    <SelectValue placeholder="Select a property" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Properties</SelectLabel>
+                      <SelectItem value="none">No Property</SelectItem>
+                      {assignableProperties.map((property) => (
+                        <SelectItem
+                          value={property.id.toString()}
+                          key={property.id}
+                        >
+                          {property.name}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </FormControl>
+              <FormDescription>Property can be select anytime.</FormDescription>
               <FormMessage />
             </FormItem>
           )}

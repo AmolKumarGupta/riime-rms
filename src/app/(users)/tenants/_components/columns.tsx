@@ -1,6 +1,6 @@
 "use client";
 
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef, Row } from "@tanstack/react-table";
 
 import { Loader2, MoreHorizontal } from "lucide-react";
 
@@ -10,7 +10,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { CaretSortIcon } from "@radix-ui/react-icons";
@@ -22,7 +21,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
@@ -30,10 +28,8 @@ import {
   Sheet,
   SheetContent,
   SheetDescription,
-  SheetFooter,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from "@/components/ui/sheet";
 import UpdateForm from "./update-form";
 import { deleteTenant } from "../actions";
@@ -44,6 +40,7 @@ export type Tenant = {
   billing_date: Date;
   starting_date: Date;
   property_id: number | null;
+  property: Record<string, unknown> | null;
 };
 
 export const columns: ColumnDef<Tenant>[] = [
@@ -69,7 +66,10 @@ export const columns: ColumnDef<Tenant>[] = [
   {
     accessorKey: "property_id",
     header: "Property",
-    cell: () => null,
+    cell: ({ row }) => {
+      const property = row.original.property;
+      return property ? property.name : <i>None</i>;
+    },
   },
   {
     accessorKey: "billing_date",
@@ -84,118 +84,121 @@ export const columns: ColumnDef<Tenant>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      const { toast } = useToast();
-      const [open, setOpen] = useState(false);
-      const [openSheet, setOpenSheet] = useState(false);
-      const [isDeleting, setIsDeleting] = useState(false);
-
-      const handleDelete = async (e: any) => {
-        try {
-          setIsDeleting(true);
-          await deleteTenant(row.getValue("id"));
-          setOpen(false);
-
-          toast({
-            title: "Tenant deleted",
-            description: "The tenant has been successfully deleted.",
-          });
-        } catch (err) {
-          toast({
-            variant: "destructive",
-            title: "Error",
-            description: "Something went wrong",
-          });
-        }
-
-        setIsDeleting(false);
-      };
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-
-            <DropdownMenuItem
-              className="cursor-pointer"
-              onSelect={() => setOpenSheet(true)}
-            >
-              Edit
-            </DropdownMenuItem>
-
-            <DropdownMenuItem
-              className="cursor-pointer"
-              onSelect={() => setOpen(true)}
-            >
-              Delete
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-
-          <Dialog open={open} onOpenChange={setOpen}>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Delete Tenant</DialogTitle>
-                <DialogDescription className="sr-only">
-                  delete tenant
-                </DialogDescription>
-              </DialogHeader>
-
-              <div>Do you really want to delete '{row.getValue("name")}' ?</div>
-
-              <DialogFooter className="gap-2 justify-between sm:justify-between">
-                <DialogClose asChild>
-                  <Button type="button" variant="secondary">
-                    Close
-                  </Button>
-                </DialogClose>
-
-                <Button
-                  type="button"
-                  variant="destructive"
-                  onClick={handleDelete}
-                >
-                  {isDeleting ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Deleting
-                    </>
-                  ) : (
-                    <>Yes</>
-                  )}
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-
-          <Sheet open={openSheet} onOpenChange={setOpenSheet}>
-            <SheetContent className="w-full sm:w-3/4">
-              <SheetHeader>
-                <SheetTitle>Edit {row.getValue("name")}</SheetTitle>
-                <SheetDescription className="sr-only">
-                  Edit this tenant
-                </SheetDescription>
-              </SheetHeader>
-
-              <UpdateForm
-                className="mt-4"
-                tenant={{
-                  id: row.getValue("id"),
-                  name: row.getValue("name"),
-                  billing_date: row.getValue("billing_date"),
-                  starting_date: row.getValue("starting_date"),
-                  property_id: row.getValue("property_id"),
-                }}
-                onSave={() => setOpenSheet(false)}
-              />
-            </SheetContent>
-          </Sheet>
-        </DropdownMenu>
-      );
+      return <ActionCell row={row} />;
     },
   },
 ];
+
+function ActionCell({ row }: { row: Row<Tenant> }) {
+  const { toast } = useToast();
+  const [open, setOpen] = useState(false);
+  const [openSheet, setOpenSheet] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const handleDelete = async () => {
+    try {
+      setIsDeleting(true);
+      await deleteTenant(row.getValue("id"));
+      setOpen(false);
+
+      toast({
+        title: "Tenant deleted",
+        description: "The tenant has been successfully deleted.",
+      });
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (err) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Something went wrong",
+      });
+    }
+
+    setIsDeleting(false);
+  };
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" className="h-8 w-8 p-0">
+          <span className="sr-only">Open menu</span>
+          <MoreHorizontal className="h-4 w-4" />
+        </Button>
+      </DropdownMenuTrigger>
+
+      <DropdownMenuContent align="end">
+        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+
+        <DropdownMenuItem
+          className="cursor-pointer"
+          onSelect={() => setOpenSheet(true)}
+        >
+          Edit
+        </DropdownMenuItem>
+
+        <DropdownMenuItem
+          className="cursor-pointer"
+          onSelect={() => setOpen(true)}
+        >
+          Delete
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete Tenant</DialogTitle>
+            <DialogDescription className="sr-only">
+              delete tenant
+            </DialogDescription>
+          </DialogHeader>
+
+          <div>
+            Do you really want to delete &apos;{row.getValue("name")}&apos; ?
+          </div>
+
+          <DialogFooter className="gap-2 justify-between sm:justify-between">
+            <DialogClose asChild>
+              <Button type="button" variant="secondary">
+                Close
+              </Button>
+            </DialogClose>
+
+            <Button type="button" variant="destructive" onClick={handleDelete}>
+              {isDeleting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Deleting
+                </>
+              ) : (
+                <>Yes</>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Sheet open={openSheet} onOpenChange={setOpenSheet}>
+        <SheetContent className="w-full sm:w-3/4">
+          <SheetHeader>
+            <SheetTitle>Edit {row.getValue("name")}</SheetTitle>
+            <SheetDescription className="sr-only">
+              Edit this tenant
+            </SheetDescription>
+          </SheetHeader>
+
+          <UpdateForm
+            className="mt-4"
+            tenant={{
+              id: row.getValue("id"),
+              name: row.getValue("name"),
+              billing_date: row.getValue("billing_date"),
+              starting_date: row.getValue("starting_date"),
+              property_id: row.getValue("property_id"),
+            }}
+            onSave={() => setOpenSheet(false)}
+          />
+        </SheetContent>
+      </Sheet>
+    </DropdownMenu>
+  );
+}

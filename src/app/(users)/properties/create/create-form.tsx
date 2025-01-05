@@ -1,6 +1,6 @@
 "use client";
 
-import { propertySchema, propertyWithVariantSchema } from "@/form-schema";
+import { propertyWithVariantSchema } from "@/form-schema";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -128,7 +128,9 @@ export default function CreateForm() {
           control={form.control}
           name="electricty_initial_value"
           render={({ field }) => (
-            <FormItem hidden={ form.getValues('electricty_bill_included') == true } >
+            <FormItem
+              hidden={form.getValues("electricty_bill_included") == true}
+            >
               <FormLabel>Electricity Initial Value</FormLabel>
               <FormControl>
                 <Input placeholder="Ex: 1000" {...field} />

@@ -1,10 +1,15 @@
 'use server'
 
 import { property, rentVariant, tenant } from '@/db/facades';
-import { propertySchema, propertyWithVariantSchema, tenantSchema } from '@/form-schema';
+import { propertySchema, propertyWithVariantSchema, tenantWithPropertySchema } from '@/form-schema';
 import { auth } from '@clerk/nextjs/server';
 import { z } from 'zod';
 
+/**
+ * Creates a new property with the provided data.
+ * 
+ * @returns An object containing the status of the operation and any errors encountered.
+ */
 export async function createProperty(data: z.infer<typeof propertyWithVariantSchema>) {
   const { userId } = await auth()
   if (!userId) {
@@ -35,6 +40,7 @@ export async function createProperty(data: z.infer<typeof propertyWithVariantSch
       });
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (e) {
     return { status: 500, error: "Something went wrong" }
   }
@@ -42,6 +48,11 @@ export async function createProperty(data: z.infer<typeof propertyWithVariantSch
   return { status: 201 }
 }
 
+/**
+ * Updates a property with the given ID using the provided form data.
+ * 
+ * @returns An object containing the status of the operation and any errors if applicable.
+ */
 export async function updateProperty(id: number, formData: FormData) {
   const { userId } = await auth()
   if (!userId) return { status: 401, error: "unauthenticated" };
@@ -66,6 +77,7 @@ export async function updateProperty(id: number, formData: FormData) {
       monthly_rent: data.monthly_rent ? parseInt(data.monthly_rent as string) : 0
     });
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (e) {
     return { status: 500, error: "Something went wrong" }
   }
@@ -74,19 +86,17 @@ export async function updateProperty(id: number, formData: FormData) {
 }
 
 /**
- * create single tenant
- * @param formData 
- * @returns 
+ * Creates a new tenant with the provided data.
+ *
+ * @returns An object containing the status code and any relevant error messages.
  */
-export async function createTenant(formData: FormData) {
+export async function createTenant(data: z.infer<typeof tenantWithPropertySchema>) {
   const { userId } = await auth()
   if (!userId) {
     return { status: 401, error: "unauthenticated" }
   }
 
-  const data = Object.fromEntries(formData);
-
-  const validated = tenantSchema.safeParse(data);
+  const validated = tenantWithPropertySchema.safeParse(data);
 
   if (!validated.success) {
     const errors = validated.error.flatten().fieldErrors
@@ -101,8 +111,10 @@ export async function createTenant(formData: FormData) {
       name: validated.data.name,
       billing_date: validated.data.billing_date,
       starting_date: validated.data.starting_date,
+      property_id: validated.data.property_id
     });
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (e) {
     return { status: 500, error: "Something went wrong" }
   }
@@ -110,13 +122,16 @@ export async function createTenant(formData: FormData) {
   return { status: 201 }
 }
 
-
-export async function updateTenant(id: number, formData: FormData) {
+/**
+ * Updates a tenant with the given ID using the provided form data.
+ * 
+ * @returns An object containing the status of the operation and any errors if applicable.
+ */
+export async function updateTenant(id: number, data: z.infer<typeof tenantWithPropertySchema>) {
   const { userId } = await auth()
   if (!userId) return { status: 401, error: "unauthenticated" };
 
-  const data = Object.fromEntries(formData);
-  const validated = tenantSchema.safeParse(data);
+  const validated = tenantWithPropertySchema.safeParse(data);
 
   if (!validated.success) {
     const errors = validated.error.flatten().fieldErrors
@@ -134,9 +149,10 @@ export async function updateTenant(id: number, formData: FormData) {
       name: data.name as string,
       billing_date: validated.data.billing_date,
       starting_date: validated.data.starting_date,
-      property_id: data.property_id as unknown as number,
+      property_id: (validated.data && validated.data.property_id) ? validated.data.property_id : null,
     });
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (e) {
     return { status: 500, error: "Something went wrong" }
   }
