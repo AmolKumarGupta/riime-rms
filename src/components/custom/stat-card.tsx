@@ -5,7 +5,7 @@ type Props = {
   title: string;
   icon?: ReactNode;
   content: string;
-  helpText: string;
+  helpText?: string;
 };
 
 export default function StatCard({ title, icon, content, helpText }: Props) {
@@ -17,7 +17,9 @@ export default function StatCard({ title, icon, content, helpText }: Props) {
       </CardHeader>
       <CardContent>
         <div className="text-2xl font-bold">{content}</div>
-        <p className="text-xs text-muted-foreground">{helpText}</p>
+        {helpText && (
+          <p className="text-xs text-muted-foreground">{helpText}</p>
+        )}
       </CardContent>
     </Card>
   );
