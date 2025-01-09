@@ -89,3 +89,14 @@ export async function unAssignedPropertiesWithTenantProperty(userId: string, ten
     }
   });
 }
+
+/**
+ * Retrieves the total number of properties for a user.
+ */
+export async function total(userId: string): Promise<number> {
+  return await client.property.count({
+    where: {
+      user_id: userId
+    }
+  });
+}

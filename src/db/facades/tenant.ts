@@ -60,3 +60,14 @@ export async function first(id: number) {
     where: { id }
   })
 }
+
+/**
+ * Retrieves the total number of tenants for a user.
+ */
+export async function total(userId: string): Promise<number> {
+  return await client.tenant.count({
+    where: {
+      user_id: userId
+    }
+  });
+}
