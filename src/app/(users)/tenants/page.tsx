@@ -13,6 +13,10 @@ const Table = dynamic(() => import("./table"), {
 export default function Page() {
   return (
     <main className="sm:pt-10 pb-10 px-2">
+      <h2 className="scroll-m-20 text-2xl sm:text-3xl font-semibold tracking-tight first:mt-0">
+        All Tenants
+      </h2>
+
       <Table />
     </main>
   );
