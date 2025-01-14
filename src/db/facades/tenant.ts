@@ -40,6 +40,7 @@ export async function tableQuery(userId: string) {
   return await client.tenant.findMany({
     select: {
       id: true,
+      uuid: true,
       name: true,
       billing_date: true,
       starting_date: true,
