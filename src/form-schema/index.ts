@@ -46,3 +46,22 @@ export const tenantWithPropertySchema = tenantSchema.extend({
     required_error: "Property is required"
   }).nullable()
 })
+
+export const createInvoiceSchema = z.object({
+  year: z.coerce.number({
+    required_error: "Year is required",
+    invalid_type_error: "Year must be a number",
+  }).int().min(1900, {
+    message: "Year must be at least 1900"
+  }).max(new Date().getFullYear(), {
+    message: `Year cannot be in the future`
+  }),
+  month: z.coerce.number({
+    required_error: "Month is required",
+    invalid_type_error: "Month must be a number",
+  }).min(1, {
+    message: "Month must be valid"
+  }).max(12, {
+    message: "Month must be valid"
+  })
+})
