@@ -48,6 +48,14 @@ export const tenantWithPropertySchema = tenantSchema.extend({
 })
 
 export const createInvoiceSchema = z.object({
+  tenant_id: z.coerce.number({
+    required_error: "Tenant is required"
+  }).nullable(),
+
+  property_id: z.coerce.number({
+    required_error: "Property is required"
+  }).nullable(),
+
   year: z.coerce.number({
     required_error: "Year is required",
     invalid_type_error: "Year must be a number",
@@ -56,6 +64,7 @@ export const createInvoiceSchema = z.object({
   }).max(new Date().getFullYear(), {
     message: `Year cannot be in the future`
   }),
+
   month: z.coerce.number({
     required_error: "Month is required",
     invalid_type_error: "Month must be a number",
@@ -63,5 +72,47 @@ export const createInvoiceSchema = z.object({
     message: "Month must be valid"
   }).max(12, {
     message: "Month must be valid"
-  })
+  }),
+
+  rent: z.coerce.number({
+    required_error: "Rent is required",
+    invalid_type_error: "Rent must be a number",
+  }).min(0, {
+    message: "Rent must be at least 0"
+  }),
+
+  prev_electricity_reading: z.coerce.number({
+    required_error: "Previous Electricity Reading is required",
+    invalid_type_error: "Previous Electricity Reading must be a number",
+  }).min(0, {
+    message: "Previous Electricity Reading must be at least 0"
+  }),
+
+  cur_electricity_reading: z.coerce.number({
+    required_error: "Current Electricity Reading is required",
+    invalid_type_error: "Current Electricity Reading must be a number",
+  }).min(0, {
+    message: "Current Electricity Reading must be at least 0"
+  }),
+
+  electricity_rent: z.coerce.number({
+    required_error: "Electricity Rent is required",
+    invalid_type_error: "Electricity Rent must be a number",
+  }).min(0, {
+    message: "Electricity Rent must be at least 0"
+  }),
+
+  tax: z.coerce.number({
+    required_error: "Tax is required",
+    invalid_type_error: "Tax must be a number",
+  }).min(0, {
+    message: "Tax must be at least 0"
+  }),
+
+  total: z.coerce.number({
+    required_error: "Total is required",
+    invalid_type_error: "Total must be a number",
+  }).min(0, {
+    message: "Total must be at least 0"
+  }),
 })
