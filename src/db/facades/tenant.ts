@@ -62,6 +62,23 @@ export async function first(id: number) {
   })
 }
 
+/** retreive tenant using uuid */
+export async function firstUsingUuid(uuid: string) {
+  return await client.tenant.findUnique({
+    where: { uuid }
+  })
+}
+
+/** retreive tenant using uuid with property and property variant */
+export async function firstUsingUuidWithProperty(uuid: string) {
+  return await client.tenant.findUnique({
+    where: { uuid },
+    include: {
+      property: true,
+    },
+  })
+}
+
 /**
  * Retrieves the total number of tenants for a user.
  */
