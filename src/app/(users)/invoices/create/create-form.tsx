@@ -27,6 +27,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { rentVariant, tenant as tenantFacade } from "@/db/facades";
 import { useEffect, useMemo } from "react";
+import { Separator } from "@/components/ui/separator";
 
 type PageProps = {
   tenant: Awaited<ReturnType<typeof tenantFacade.firstUsingUuidWithProperty>>;
@@ -225,6 +226,8 @@ export default function CreateForm({ tenant, propertyVariants }: PageProps) {
             </div>
           </>
         )}
+
+        <Separator />
 
         <div className="grid grid-cols-3 gap-4">
           <FormLabel
