@@ -50,11 +50,11 @@ export const tenantWithPropertySchema = tenantSchema.extend({
 export const createInvoiceSchema = z.object({
   tenant_id: z.coerce.number({
     required_error: "Tenant is required"
-  }).nullable(),
+  }),
 
   property_id: z.coerce.number({
     required_error: "Property is required"
-  }).nullable(),
+  }),
 
   year: z.coerce.number({
     required_error: "Year is required",

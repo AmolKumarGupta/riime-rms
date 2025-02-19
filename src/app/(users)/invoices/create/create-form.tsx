@@ -26,8 +26,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { rentVariant, tenant as tenantFacade } from "@/db/facades";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Separator } from "@/components/ui/separator";
+import { createInvoice } from "@/app/actions";
+import { useToast } from "@/hooks/use-toast";
+import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 type PageProps = {
   tenant: Awaited<ReturnType<typeof tenantFacade.firstUsingUuidWithProperty>>;
@@ -35,6 +39,10 @@ type PageProps = {
 };
 
 export default function CreateForm({ tenant, propertyVariants }: PageProps) {
+  const { toast } = useToast();
+  const router = useRouter();
+  const [pending, setPending] = useState(false);
+
   const electricityVariant = useMemo(() => {
     return propertyVariants.find((variant) => variant.name === "electricity");
   }, [propertyVariants]);
@@ -43,7 +51,7 @@ export default function CreateForm({ tenant, propertyVariants }: PageProps) {
     resolver: zodResolver(createInvoiceSchema),
     defaultValues: {
       tenant_id: tenant?.id,
-      property_id: tenant?.property_id,
+      property_id: tenant?.property_id ?? undefined,
       year: new Date().getFullYear(),
       month: new Date().getMonth() + 1,
       rent: tenant?.property?.monthly_rent ?? 0,
@@ -75,8 +83,23 @@ export default function CreateForm({ tenant, propertyVariants }: PageProps) {
     setValue("total", Math.max(calculated, 0));
   }, [rent, electricity_rent, tax, setValue]);
 
-  function onSubmit(data: z.infer<typeof createInvoiceSchema>) {
-    console.log(data);
+  async function onSubmit(data: z.infer<typeof createInvoiceSchema>) {
+    setPending(true);
+    const response = await createInvoice(data);
+
+    if (response.status == 201) {
+      return router.push("/tenants");
+    }
+
+    setPending(false);
+
+    toast({
+      variant: "destructive",
+      title: "Uh oh! Something went wrong.",
+      description: response?.error
+        ? response.error
+        : "There was a problem with your request.",
+    });
   }
 
   return (
@@ -291,7 +314,16 @@ export default function CreateForm({ tenant, propertyVariants }: PageProps) {
           />
         </div>
 
-        <Button type="submit">Save</Button>
+        <Button type="submit">
+          {pending ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Saving...
+            </>
+          ) : (
+            <>Save</>
+          )}
+        </Button>
       </form>
     </Form>
   );

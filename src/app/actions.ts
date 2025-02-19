@@ -1,7 +1,7 @@
 'use server'
 
-import { property, rentVariant, tenant } from '@/db/facades';
-import { propertySchema, propertyWithVariantSchema, tenantWithPropertySchema } from '@/form-schema';
+import { invoice, property, rentVariant, tenant } from '@/db/facades';
+import { createInvoiceSchema, propertySchema, propertyWithVariantSchema, tenantWithPropertySchema } from '@/form-schema';
 import { auth } from '@clerk/nextjs/server';
 import { z } from 'zod';
 
@@ -158,4 +158,30 @@ export async function updateTenant(id: number, data: z.infer<typeof tenantWithPr
   }
 
   return { status: 200 }
+}
+
+
+export async function createInvoice(data: z.infer<typeof createInvoiceSchema>) {
+  const { userId } = auth()
+  if (!userId) {
+    return { status: 401, error: "unauthenticated" }
+  }
+
+  const validated = createInvoiceSchema.safeParse(data);
+  if (!validated.success) {
+    const errors = validated.error.flatten().fieldErrors
+    const error = Object.values(errors).at(0)?.at(0);
+
+    return { status: 422, errors, error }
+  }
+
+  try {
+    await invoice.create(validated.data);
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (e) {
+    return { status: 500, error: "Something went wrong" }
+  }
+
+  return { status: 201 }
 }
