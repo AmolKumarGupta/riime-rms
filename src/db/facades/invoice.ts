@@ -34,12 +34,12 @@ export async function create(data: {
     })
 
     if (rentVariant) {
-        await client.invoiceVariantItem.update({
+        await client.rentVariant.update({
             where: {
                 id: rentVariant.id
             },
             data: {
-                current_reading: data.cur_electricity_reading
+                current: data.cur_electricity_reading
             }
         });
 
