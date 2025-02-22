@@ -56,3 +56,23 @@ export async function create(data: {
 
     return invoice;
 }
+
+/**
+ * get invoices of tenant in descending order of year and month
+ */
+export async function getByTenantId(id: number, limit: number = 10) {
+    return await client.invoice.findMany({
+        where: {
+            tenant_id: id
+        },
+        orderBy: [
+            {
+                year: "desc"
+            },
+            {
+                month: "desc"
+            }
+        ],
+        take: limit
+    });
+}
