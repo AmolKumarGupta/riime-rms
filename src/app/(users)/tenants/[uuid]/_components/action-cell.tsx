@@ -2,63 +2,20 @@
 
 import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
+import { DropdownMenuProps } from "@radix-ui/react-dropdown-menu";
+import { MoreHorizontal } from "lucide-react";
+import Link, { LinkProps } from "next/link";
+import React from "react";
 
-import { useToast } from "@/hooks/use-toast";
-import { Loader2, MoreHorizontal } from "lucide-react";
-import { useState } from "react";
-
-export default function ActionCell() {
-  const { toast } = useToast();
-  const [open, setOpen] = useState(false);
-  const [openSheet, setOpenSheet] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
-
-  const handleDelete = async () => {
-    try {
-      setIsDeleting(true);
-      // do here
-      setOpen(false);
-
-      toast({
-        title: "Tenant deleted",
-        description: "The tenant has been successfully deleted.",
-      });
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (err) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Something went wrong",
-      });
-    }
-
-    setIsDeleting(false);
-  };
-
+const ActionCell = ({ children, ...props }: DropdownMenuProps) => {
   return (
-    <DropdownMenu>
+    <DropdownMenu {...props}>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="h-8 w-8 p-0">
           <span className="sr-only">Open menu</span>
@@ -69,62 +26,22 @@ export default function ActionCell() {
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
-        <DropdownMenuItem
-          className="cursor-pointer"
-          onSelect={() => setOpenSheet(true)}
-        >
-          Edit
-        </DropdownMenuItem>
-
-        <DropdownMenuItem
-          className="cursor-pointer"
-          onSelect={() => setOpen(true)}
-        >
-          Delete
-        </DropdownMenuItem>
+        {children}
       </DropdownMenuContent>
-
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Delete Tenant</DialogTitle>
-            <DialogDescription className="sr-only">
-              delete tenant
-            </DialogDescription>
-          </DialogHeader>
-
-          <div>Do you really want to delete ?</div>
-
-          <DialogFooter className="gap-2 justify-between sm:justify-between">
-            <DialogClose asChild>
-              <Button type="button" variant="secondary">
-                Close
-              </Button>
-            </DialogClose>
-
-            <Button type="button" variant="destructive" onClick={handleDelete}>
-              {isDeleting ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Deleting
-                </>
-              ) : (
-                <>Yes</>
-              )}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      <Sheet open={openSheet} onOpenChange={setOpenSheet}>
-        <SheetContent className="w-full sm:w-3/4">
-          <SheetHeader>
-            <SheetTitle>Edit</SheetTitle>
-            <SheetDescription className="sr-only">
-              Edit this tenant
-            </SheetDescription>
-          </SheetHeader>
-        </SheetContent>
-      </Sheet>
     </DropdownMenu>
   );
+};
+
+interface ActionCellLinkProps extends LinkProps {
+  children: React.ReactNode;
 }
+
+const ActionCellLink = ({ children, ...props }: ActionCellLinkProps) => {
+  return (
+    <DropdownMenuItem className="cursor-pointer" asChild>
+      <Link {...props}>{children}</Link>
+    </DropdownMenuItem>
+  );
+};
+
+export { ActionCell, ActionCellLink };

@@ -13,8 +13,8 @@ import { invoice } from "@/db/facades";
 import { months } from "@/lib/calendar";
 import { cn } from "@/lib/utils";
 import { InvoiceStatus } from "@/types/globals";
-import ActionCell from "./action-cell";
 import { formatDate } from "date-fns";
+import { ActionCell, ActionCellLink } from "./action-cell";
 
 export default function InvoiceSection({
   invoices,
@@ -60,7 +60,11 @@ export default function InvoiceSection({
                 {formatDate(invoice.created_at, "dd/MM/yyyy")}
               </TableCell>
               <TableCell className="text-center">
-                <ActionCell />
+                <ActionCell>
+                  <ActionCellLink href={`/invoices/${invoice.uuid}`}>
+                    View
+                  </ActionCellLink>
+                </ActionCell>
               </TableCell>
             </TableRow>
           ))}
