@@ -4,6 +4,7 @@ import { rentVariant, tenant as tenantFacade } from "@/db/facades";
 import { notFound } from "next/navigation";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import CreateForm from "./create-form";
+import { auth } from "@clerk/nextjs/server";
 
 export const metadata: Metadata = {
   title: `${process.env.NEXT_PUBLIC_APP_NAME} - New Invoice`,
@@ -14,11 +15,17 @@ type PageProps = {
 };
 
 export default async function Page({ searchParams }: PageProps) {
+  const { userId } = auth();
+  if (!userId) return notFound();
+
   const { tenant = undefined } = await searchParams;
   if (!tenant) return notFound();
 
   const model = await tenantFacade.firstUsingUuidWithProperty(tenant as string);
   if (!model) return notFound();
+
+  // Authorization check
+  if (model.user_id !== userId) return notFound();
 
   const propertyVariants =
     model.property && model.property.id
