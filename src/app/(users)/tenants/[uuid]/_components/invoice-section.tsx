@@ -23,7 +23,6 @@ export default function InvoiceSection({
   invoices: Awaited<ReturnType<typeof invoice.getByTenantId>>;
   className?: string | undefined;
 }) {
-  "use client";
   return (
     <section className={cn("mt-8", className)}>
       <h3 className="font-bold text-2xl">Invoices</h3>
@@ -32,6 +31,7 @@ export default function InvoiceSection({
         <TableHeader>
           <TableRow>
             <TableHead className="">Invoice</TableHead>
+            <TableHead className="">Period</TableHead>
             <TableHead className="text-center">Status</TableHead>
             <TableHead className="text-center">Amount</TableHead>
             <TableHead className="text-center hidden sm:table-cell">
@@ -43,6 +43,9 @@ export default function InvoiceSection({
         <TableBody>
           {invoices.map((invoice) => (
             <TableRow key={invoice.id}>
+              <TableCell className="">
+                #INV-{invoice.id.toString().padStart(5, "0")}
+              </TableCell>
               <TableCell className="font-semibold min-w-[6rem]">
                 <span className="text-xs">
                   {months().find((m) => m.value === invoice.month)?.label}{" "}

@@ -76,3 +76,19 @@ export async function getByTenantId(id: number, limit: number = 10) {
         take: limit
     });
 }
+
+export async function first(id: number) {
+    return await client.invoice.findFirst({
+        where: {
+            id
+        }
+    });
+}
+
+export async function getByUuid(uuid: string) {
+    return await client.invoice.findFirst({
+        where: {
+            uuid
+        }
+    });
+}
