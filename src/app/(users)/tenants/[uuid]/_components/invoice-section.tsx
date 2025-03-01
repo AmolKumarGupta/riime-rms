@@ -15,6 +15,7 @@ import { cn } from "@/lib/utils";
 import { InvoiceStatus } from "@/types/globals";
 import { formatDate } from "date-fns";
 import { ActionCell, ActionCellLink } from "./action-cell";
+import { formatInvoiceId } from "@/lib/invoice";
 
 export default function InvoiceSection({
   invoices,
@@ -43,9 +44,7 @@ export default function InvoiceSection({
         <TableBody>
           {invoices.map((invoice) => (
             <TableRow key={invoice.id}>
-              <TableCell className="">
-                #INV-{invoice.id.toString().padStart(5, "0")}
-              </TableCell>
+              <TableCell className="">#{formatInvoiceId(invoice.id)}</TableCell>
               <TableCell className="font-semibold min-w-[6rem]">
                 <span className="text-xs">
                   {months().find((m) => m.value === invoice.month)?.label}{" "}
