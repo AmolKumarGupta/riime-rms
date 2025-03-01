@@ -47,15 +47,7 @@ export const tenantWithPropertySchema = tenantSchema.extend({
   }).nullable()
 })
 
-export const createInvoiceSchema = z.object({
-  tenant_id: z.coerce.number({
-    required_error: "Tenant is required"
-  }),
-
-  property_id: z.coerce.number({
-    required_error: "Property is required"
-  }),
-
+export const baseInvoiceCrudSchema = z.object({
   year: z.coerce.number({
     required_error: "Year is required",
     invalid_type_error: "Year must be a number",
@@ -114,5 +106,21 @@ export const createInvoiceSchema = z.object({
     invalid_type_error: "Total must be a number",
   }).min(0, {
     message: "Total must be at least 0"
+  }),
+})
+
+export const createInvoiceSchema = baseInvoiceCrudSchema.extend({
+  tenant_id: z.coerce.number({
+    required_error: "Tenant is required"
+  }),
+
+  property_id: z.coerce.number({
+    required_error: "Property is required"
+  }),
+})
+
+export const updateInvoiceSchema = baseInvoiceCrudSchema.extend({
+  id: z.coerce.number({
+    required_error: "Invoice ID is required"
   }),
 })
