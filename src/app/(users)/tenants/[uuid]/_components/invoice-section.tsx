@@ -66,6 +66,9 @@ export default function InvoiceSection({
                   <ActionCellLink href={`/invoices/${invoice.uuid}`}>
                     View
                   </ActionCellLink>
+                  <ActionCellLink href={`/invoices/${invoice.uuid}/edit`}>
+                    Edit
+                  </ActionCellLink>
                 </ActionCell>
               </TableCell>
             </TableRow>
