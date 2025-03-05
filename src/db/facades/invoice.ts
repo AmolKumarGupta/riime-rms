@@ -57,6 +57,52 @@ export async function create(data: {
     return invoice;
 }
 
+export async function update(id: number, data: {
+    year: number;
+    month: number;
+    rent: number;
+    prev_electricity_reading: number;
+    cur_electricity_reading: number;
+    electricity_rent: number;
+    tax: number;
+    total: number;
+}) {
+
+    const invoice = await client.invoice.update({
+        where: {
+            id
+        },
+        data: {
+            year: data.year,
+            month: data.month,
+            monthly_rent: data.rent,
+            tax: data.tax,
+            total: data.total,
+        }
+    });
+
+    const rentVariant = await client.rentVariant.findFirst({
+        where: {
+            property_id: invoice.property_id,
+            name: "electricity"
+        }
+    })
+
+    if (rentVariant) {
+        await client.invoiceVariantItem.create({
+            data: {
+                invoice_id: invoice.id,
+                name: "electricity",
+                prev_reading: data.prev_electricity_reading,
+                current_reading: data.cur_electricity_reading,
+                amount: data.electricity_rent
+            }
+        })
+    }
+
+    return invoice;
+}
+
 /**
  * get invoices of tenant in descending order of year and month
  */

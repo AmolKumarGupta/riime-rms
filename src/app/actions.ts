@@ -1,7 +1,7 @@
 'use server'
 
 import { invoice, property, rentVariant, tenant } from '@/db/facades';
-import { createInvoiceSchema, propertySchema, propertyWithVariantSchema, tenantWithPropertySchema } from '@/form-schema';
+import { createInvoiceSchema, propertySchema, propertyWithVariantSchema, tenantWithPropertySchema, updateInvoiceSchema } from '@/form-schema';
 import { auth } from '@clerk/nextjs/server';
 import { z } from 'zod';
 
@@ -177,6 +177,33 @@ export async function createInvoice(data: z.infer<typeof createInvoiceSchema>) {
 
   try {
     await invoice.create(validated.data);
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (e) {
+    return { status: 500, error: "Something went wrong" }
+  }
+
+  return { status: 201 }
+}
+
+export async function updateInvoice(data: z.infer<typeof updateInvoiceSchema>) {
+  const { userId } = auth();
+  if (!userId) {
+    return { status: 401, error: "unauthenticated" }
+  }
+
+  const validated = updateInvoiceSchema.safeParse(data);
+  if (!validated.success) {
+    const errors = validated.error.flatten().fieldErrors;
+    const error = Object.values(errors).at(0)?.at(0);
+    return { status: 422, errors, error };
+  }
+
+  try {
+    const model = await invoice.first(validated.data.id);
+    if (!model) return { status: 400, error: "not found" };
+
+    await invoice.update(validated.data.id, validated.data);
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (e) {

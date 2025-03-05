@@ -32,6 +32,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { updateInvoice } from "@/app/actions";
 
 type PageProps = {
   invoice: NonNullable<Awaited<ReturnType<typeof invoiceFacade.first>>>;
@@ -96,15 +97,12 @@ export default function UpdateForm({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async function onSubmit(data: z.infer<typeof updateInvoiceSchema>) {
     setPending(true);
-
-    // const response = await createInvoice(data);
-    const response = { status: 400, error: "" };
+    const response = await updateInvoice(data);
+    setPending(false);
 
     if (response.status == 201) {
-      return router.push("/tenants");
+      return router.push(`/invoices/${invoice.uuid}/edit`);
     }
-
-    setPending(false);
 
     toast({
       variant: "destructive",
