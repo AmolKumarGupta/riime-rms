@@ -123,4 +123,7 @@ export const updateInvoiceSchema = baseInvoiceCrudSchema.extend({
   id: z.coerce.number({
     required_error: "Invoice ID is required"
   }),
+  status: z.string({
+    required_error: "Status is required"
+  })
 })
