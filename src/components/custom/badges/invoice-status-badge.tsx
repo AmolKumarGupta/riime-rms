@@ -1,4 +1,5 @@
 import { Badge } from "@/components/ui/badge";
+import { getInvoiceStatusInfo } from "@/lib/invoice";
 import { cn } from "@/lib/utils";
 import { InvoiceStatus } from "@/types/globals";
 import { cva, type VariantProps } from "class-variance-authority";
@@ -30,15 +31,7 @@ export default function InvoiceStatusBadge({
   status,
   ...props
 }: Props) {
-  const label = {
-    draft: "Draft",
-    sent: "Sent",
-    paid: "Paid",
-    overdue: "Overdue",
-    partially_paid: "Partially Paid",
-    cancelled: "Cancelled",
-    pending: "Pending",
-  };
+  const label = getInvoiceStatusInfo();
 
   return (
     <Badge

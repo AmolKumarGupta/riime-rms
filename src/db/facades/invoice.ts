@@ -66,6 +66,7 @@ export async function update(id: number, data: {
     electricity_rent: number;
     tax: number;
     total: number;
+    status: string;
 }) {
 
     const invoice = await client.invoice.update({
@@ -78,6 +79,7 @@ export async function update(id: number, data: {
             monthly_rent: data.rent,
             tax: data.tax,
             total: data.total,
+            status: data.status
         }
     });
 

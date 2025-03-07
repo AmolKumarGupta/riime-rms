@@ -33,6 +33,8 @@ import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { updateInvoice } from "@/app/actions";
+import { getInvoiceStatusInfo } from "@/lib/invoice";
+import { InvoiceStatus } from "@/types/globals";
 
 type PageProps = {
   invoice: NonNullable<Awaited<ReturnType<typeof invoiceFacade.first>>>;
@@ -74,6 +76,7 @@ export default function UpdateForm({
           : 0,
       tax: invoice.tax,
       total: invoice.total,
+      status: invoice.status as InvoiceStatus,
     },
   });
 
@@ -169,6 +172,44 @@ export default function UpdateForm({
               )}
             />
           </div>
+        </div>
+
+        <div className="grid grid-cols-3 gap-4">
+          <FormLabel htmlFor="status" className="col-span-2 flex items-center">
+            Status:{" "}
+          </FormLabel>
+          <FormField
+            control={form.control}
+            name="status"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value.toString()}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select status" />
+                    </SelectTrigger>
+                    <SelectContent className="max-h-64">
+                      <SelectGroup>
+                        <SelectLabel>Months</SelectLabel>
+                        {Object.entries(getInvoiceStatusInfo()).map(
+                          ([value, label]) => (
+                            <SelectItem value={value.toString()} key={value}>
+                              {label}
+                            </SelectItem>
+                          )
+                        )}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormDescription></FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
 
         <div className="grid grid-cols-3 gap-4">
