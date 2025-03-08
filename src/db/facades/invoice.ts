@@ -91,15 +91,26 @@ export async function update(id: number, data: {
     })
 
     if (rentVariant) {
-        await client.invoiceVariantItem.create({
-            data: {
-                invoice_id: invoice.id,
-                name: "electricity",
-                prev_reading: data.prev_electricity_reading,
-                current_reading: data.cur_electricity_reading,
-                amount: data.electricity_rent
+        const variantItem = await client.invoiceVariantItem.findFirst({
+            where: {
+                invoice_id: id,
+                name: "electricity"
             }
         })
+
+        if (variantItem) {
+            await client.invoiceVariantItem.update({
+                where: {
+                    id: variantItem.id
+                },
+                data: {
+                    prev_reading: data.prev_electricity_reading,
+                    current_reading: data.cur_electricity_reading,
+                    amount: data.electricity_rent
+                }
+            })
+
+        }
     }
 
     return invoice;
