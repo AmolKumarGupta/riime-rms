@@ -8,12 +8,12 @@ import React from "react";
 const invoiceStatusBadgeVariants = cva("", {
   variants: {
     status: {
-      draft: "bg-purple-500 hover:bg-purple-500/80",
+      draft: "bg-zinc-500 hover:bg-zinc-500/80",
       sent: "bg-yellow-500 hover:bg-yellow-500/80",
       paid: "bg-green-500 hover:bg-green-500/80",
-      overdue: "bg-danger-500 hover:bg-danger-500/80",
+      overdue: "bg-purple-500 hover:bg-purple-500/80",
       partially_paid: "bg-orange-500 hover:bg-orange-500/80",
-      cancelled: "bg-zinc-500 hover:bg-zinc-500/80",
+      cancelled: "bg-red-500 hover:bg-red-500/80",
       pending: "bg-blue-500 hover:bg-blue-500/80",
     },
   },
