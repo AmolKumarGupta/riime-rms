@@ -46,3 +46,84 @@ export const tenantWithPropertySchema = tenantSchema.extend({
     required_error: "Property is required"
   }).nullable()
 })
+
+export const baseInvoiceCrudSchema = z.object({
+  year: z.coerce.number({
+    required_error: "Year is required",
+    invalid_type_error: "Year must be a number",
+  }).int().min(1900, {
+    message: "Year must be at least 1900"
+  }).max(new Date().getFullYear(), {
+    message: `Year cannot be in the future`
+  }),
+
+  month: z.coerce.number({
+    required_error: "Month is required",
+    invalid_type_error: "Month must be a number",
+  }).min(1, {
+    message: "Month must be valid"
+  }).max(12, {
+    message: "Month must be valid"
+  }),
+
+  rent: z.coerce.number({
+    required_error: "Rent is required",
+    invalid_type_error: "Rent must be a number",
+  }).min(0, {
+    message: "Rent must be at least 0"
+  }),
+
+  prev_electricity_reading: z.coerce.number({
+    required_error: "Previous Electricity Reading is required",
+    invalid_type_error: "Previous Electricity Reading must be a number",
+  }).min(0, {
+    message: "Previous Electricity Reading must be at least 0"
+  }),
+
+  cur_electricity_reading: z.coerce.number({
+    required_error: "Current Electricity Reading is required",
+    invalid_type_error: "Current Electricity Reading must be a number",
+  }).min(0, {
+    message: "Current Electricity Reading must be at least 0"
+  }),
+
+  electricity_rent: z.coerce.number({
+    required_error: "Electricity Rent is required",
+    invalid_type_error: "Electricity Rent must be a number",
+  }).min(0, {
+    message: "Electricity Rent must be at least 0"
+  }),
+
+  tax: z.coerce.number({
+    required_error: "Tax is required",
+    invalid_type_error: "Tax must be a number",
+  }).min(0, {
+    message: "Tax must be at least 0"
+  }),
+
+  total: z.coerce.number({
+    required_error: "Total is required",
+    invalid_type_error: "Total must be a number",
+  }).min(0, {
+    message: "Total must be at least 0"
+  }),
+})
+
+export const createInvoiceSchema = baseInvoiceCrudSchema.extend({
+  tenant_id: z.coerce.number({
+    required_error: "Tenant is required"
+  }),
+
+  property_id: z.coerce.number({
+    required_error: "Property is required"
+  }),
+})
+
+export const updateInvoiceSchema = baseInvoiceCrudSchema.extend({
+  id: z.coerce.number({
+    required_error: "Invoice ID is required"
+  }),
+  status: z.string({
+    required_error: "Status is required"
+  })
+})

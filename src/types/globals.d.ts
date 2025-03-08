@@ -9,3 +9,7 @@ declare global {
 		}
 	}
 }
+
+export const InvoiceStatuses = ['draft', 'sent', 'paid', 'overdue', 'partially_paid', 'cancelled', 'pending'] as const
+
+export type InvoiceStatus = typeof InvoiceStatuses[number]

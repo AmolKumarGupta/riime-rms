@@ -17,6 +17,7 @@ datasource db {
 
 model Property {
   id           Int           @id @default(autoincrement())
+  uuid         String        @unique @default(uuid())
   user_id      String
   name         String        @db.VarChar(255)
   monthly_rent Int?
@@ -24,6 +25,8 @@ model Property {
   updated_at   DateTime      @updatedAt
   tenant       Tenant?
   rentVariant  RentVariant[]
+
+  Invoice Invoice[]
 }
 
 model RentVariant {
@@ -39,6 +42,7 @@ model RentVariant {
 
 model Tenant {
   id            Int      @id @default(autoincrement())
+  uuid          String   @unique @default(uuid())
   user_id       String
   property_id   Int?     @unique
   name          String   @db.VarChar(255)
@@ -48,4 +52,40 @@ model Tenant {
   updated_at    DateTime @updatedAt
 
   property Property? @relation(fields: [property_id], references: [id])
+  Invoice  Invoice[]
+}
+
+model Invoice {
+  id           Int      @id @default(autoincrement())
+  uuid         String   @unique @default(uuid())
+  tenant_id    Int
+  property_id  Int
+  year         Int
+  month        Int
+  monthly_rent Int
+  tax          Int
+  total        Int
+  status       String   @default("pending")
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+
+  property           Property             @relation(fields: [property_id], references: [id])
+  tenant             Tenant               @relation(fields: [tenant_id], references: [id])
+  InvoiceVariantItem InvoiceVariantItem[]
+
+  @@index([year, month])
+  @@index([status])
+}
+
+model InvoiceVariantItem {
+  id              Int    @id @default(autoincrement())
+  invoice_id      Int
+  name            String
+  prev_reading    Int    @default(0)
+  current_reading Int    @default(0)
+  amount          Int    @default(0)
+
+  invoice Invoice @relation(fields: [invoice_id], references: [id])
+
+  @@index([name])
 }

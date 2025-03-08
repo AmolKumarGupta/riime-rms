@@ -33,9 +33,11 @@ import {
 } from "@/components/ui/sheet";
 import UpdateForm from "./update-form";
 import { deleteTenant } from "../actions";
+import Link from "next/link";
 
 export type Tenant = {
   id: number;
+  uuid: string;
   name: string;
   billing_date: Date;
   starting_date: Date;
@@ -62,6 +64,13 @@ export const columns: ColumnDef<Tenant>[] = [
   {
     accessorKey: "name",
     header: "Tenant Name",
+    cell: ({ row }) => {
+      return (
+        <Link href={`tenants/${row.original.uuid}`}>
+          {row.getValue("name")}
+        </Link>
+      );
+    },
   },
   {
     accessorKey: "property_id",
@@ -128,6 +137,16 @@ function ActionCell({ row }: { row: Row<Tenant> }) {
 
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
+
+        <DropdownMenuItem className="cursor-pointer">
+          <Link href={`/invoices/create?tenant=${row.original.uuid}`}>
+            Create Invoice
+          </Link>
+        </DropdownMenuItem>
+
+        <DropdownMenuItem className="cursor-pointer">
+          <Link href={`/tenants/${row.original.uuid}`}>View</Link>
+        </DropdownMenuItem>
 
         <DropdownMenuItem
           className="cursor-pointer"

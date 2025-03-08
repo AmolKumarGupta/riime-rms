@@ -40,6 +40,7 @@ export async function tableQuery(userId: string) {
   return await client.tenant.findMany({
     select: {
       id: true,
+      uuid: true,
       name: true,
       billing_date: true,
       starting_date: true,
@@ -58,6 +59,23 @@ export async function tableQuery(userId: string) {
 export async function first(id: number) {
   return await client.tenant.findUnique({
     where: { id }
+  })
+}
+
+/** retreive tenant using uuid */
+export async function firstUsingUuid(uuid: string) {
+  return await client.tenant.findUnique({
+    where: { uuid }
+  })
+}
+
+/** retreive tenant using uuid with property and property variant */
+export async function firstUsingUuidWithProperty(uuid: string) {
+  return await client.tenant.findUnique({
+    where: { uuid },
+    include: {
+      property: true,
+    },
   })
 }
 

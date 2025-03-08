@@ -15,3 +15,11 @@ export async function create(
 
   return variant;
 }
+
+export async function all(property_id: number) {
+  const variants = await client.rentVariant.findMany({
+    where: { property_id }
+  });
+
+  return variants;
+}
