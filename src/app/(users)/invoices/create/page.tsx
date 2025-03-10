@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import CreateForm from "./create-form";
 import { auth } from "@clerk/nextjs/server";
+import CenteredLayout from "@/components/custom/containers/centered-layout";
 
 export const metadata: Metadata = {
   title: `${process.env.NEXT_PUBLIC_APP_NAME} - New Invoice`,
@@ -33,14 +34,14 @@ export default async function Page({ searchParams }: PageProps) {
       : [];
 
   return (
-    <main className="sm:pt-8 pb-8 px-2">
+    <CenteredLayout className="sm:pt-8 pb-8 px-2">
       <h2 className="scroll-m-20 text-2xl sm:text-3xl font-semibold tracking-tight first:mt-0">
         New Invoice
       </h2>
 
       <Separator className="my-4 bg-zinc-50" />
 
-      <div className="w-full sm:w-1/2 mx-auto space-y-4">
+      <div className="w-full mx-auto space-y-4">
         <Alert className="border-zinc-900">
           <AlertTitle className="text-xl font-semibold">
             {model.name}
@@ -52,6 +53,6 @@ export default async function Page({ searchParams }: PageProps) {
 
         <CreateForm tenant={model} propertyVariants={propertyVariants} />
       </div>
-    </main>
+    </CenteredLayout>
   );
 }
