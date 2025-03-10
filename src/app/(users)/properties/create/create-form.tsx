@@ -73,7 +73,7 @@ export default function CreateForm() {
       <form
         ref={formRef}
         onSubmit={form.handleSubmit(onSubmit)}
-        className="w-2/3 space-y-6"
+        className="w-full md:w-2/3 space-y-6"
       >
         <FormField
           control={form.control}
