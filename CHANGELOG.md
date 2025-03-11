@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.0.4
+## 0.0.5
 
 ### Features
  - add money formatter [#23](https://github.com/AmolKumarGupta/riime-rms/issues/23)
