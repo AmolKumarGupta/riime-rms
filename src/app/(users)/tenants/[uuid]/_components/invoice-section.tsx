@@ -16,6 +16,7 @@ import { InvoiceStatus } from "@/types/globals";
 import { formatDate } from "date-fns";
 import { ActionCell, ActionCellLink } from "./action-cell";
 import { formatInvoiceId } from "@/lib/invoice";
+import money from "@/lib/money";
 
 export default function InvoiceSection({
   invoices,
@@ -57,7 +58,9 @@ export default function InvoiceSection({
                   className=""
                 />
               </TableCell>
-              <TableCell className="text-center">{invoice.total}</TableCell>
+              <TableCell className="text-center">
+                {money(invoice.total)}
+              </TableCell>
               <TableCell className="text-center hidden sm:block">
                 {formatDate(invoice.created_at, "dd/MM/yyyy")}
               </TableCell>
