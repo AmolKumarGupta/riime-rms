@@ -1,6 +1,7 @@
 "use client";
 
 import { tenant } from "@/db/facades";
+import money from "@/lib/money";
 import { formatDate } from "date-fns";
 
 export default function BasicInfo({
@@ -23,7 +24,7 @@ export default function BasicInfo({
         <div>
           <div className="text-gray-400 text-sm">Monthly Rent</div>
           <div className="text-gray-700 font-semibold">
-            {model.property.monthly_rent}
+            {money(model.property.monthly_rent as number)}
           </div>
         </div>
       )}

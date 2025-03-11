@@ -33,6 +33,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import UpdateForm from "./update-form";
+import money from "@/lib/money";
 
 export type Property = {
   id: number;
@@ -63,6 +64,7 @@ export const columns: ColumnDef<Property>[] = [
   {
     accessorKey: "monthly_rent",
     header: "Monthly Rent",
+    cell: ({ row }) => money(row.getValue("monthly_rent")),
   },
   {
     id: "actions",

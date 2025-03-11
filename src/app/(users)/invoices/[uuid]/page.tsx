@@ -7,6 +7,7 @@ import { formatDate } from "date-fns";
 import { InvoiceStatus } from "@/types/globals";
 import { Calendar } from "lucide-react";
 import InvoiceStatusBadge from "@/components/custom/badges/invoice-status-badge";
+import money from "@/lib/money";
 
 type PageProps = {
   params: { uuid: string };
@@ -61,20 +62,24 @@ export default async function Page({ params }: PageProps) {
         <div className="flex justify-between items-center mt-4">
           <div className="text-gray-700 font-semibold">Monthly Rent</div>
           <div className="text-gray-700 font-medium">
-            {myInvoice.monthly_rent}
+            {money(myInvoice.monthly_rent)}
           </div>
         </div>
 
         <div className="flex justify-between items-center mt-4">
           <div className="text-gray-700 font-semibold">Tax</div>
-          <div className="text-gray-700 font-medium">{myInvoice.tax}</div>
+          <div className="text-gray-700 font-medium">
+            {money(myInvoice.tax)}
+          </div>
         </div>
 
         <hr className="mt-4" />
 
         <div className="flex justify-between items-center mt-4">
           <div className="text-gray-700 font-bold">Total</div>
-          <div className="text-gray-700 font-bold">{myInvoice.total}</div>
+          <div className="text-gray-700 font-bold">
+            {money(myInvoice.total)}
+          </div>
         </div>
       </main>
     </main>
