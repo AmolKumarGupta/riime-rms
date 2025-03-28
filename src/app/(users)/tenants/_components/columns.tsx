@@ -34,6 +34,7 @@ import {
 import UpdateForm from "./update-form";
 import { deleteTenant } from "../actions";
 import Link from "next/link";
+import { formatDate } from "date-fns";
 
 export type Tenant = {
   id: number;
@@ -83,12 +84,12 @@ export const columns: ColumnDef<Tenant>[] = [
   {
     accessorKey: "billing_date",
     header: "Billing Date",
-    cell: ({ row }) => new Date(row.getValue("billing_date")).toDateString(),
+    cell: ({ row }) => formatDate(row.getValue("billing_date"), "dd/MM/yyyy"),
   },
   {
     accessorKey: "starting_date",
     header: "Starting Date",
-    cell: ({ row }) => new Date(row.getValue("starting_date")).toDateString(),
+    cell: ({ row }) => formatDate(row.getValue("starting_date"), "dd/MM/yyyy"),
   },
   {
     id: "actions",
