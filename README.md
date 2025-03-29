@@ -1,4 +1,6 @@
-# Riime
+# Riime 
+
+[![Lint](https://github.com/AmolKumarGupta/riime-rms/actions/workflows/lint.yml/badge.svg)](https://github.com/AmolKumarGupta/riime-rms/actions/workflows/lint.yml)
 
 A comprehensive rental management system built using Next.js, Prisma, and Shacdn.
 
