@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.0
+
+### Features
+ - add payment schema [#26](https://github.com/AmolKumarGupta/riime-rms/issues/26)
+
+
 ## 0.0.6
 
 ### Features
