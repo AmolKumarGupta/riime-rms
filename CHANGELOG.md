@@ -1,12 +1,12 @@
 # Changelog
 
-## 0.1.0
+## 0.1.0 - release
 
 ### Features
  - add payment schema [#26](https://github.com/AmolKumarGupta/riime-rms/issues/26)
 
 
-## 0.0.6
+## 0.0.6 - 2025-03-29
 
 ### Features
  - add money formatter [#23](https://github.com/AmolKumarGupta/riime-rms/issues/23)

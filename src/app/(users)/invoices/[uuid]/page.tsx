@@ -8,6 +8,7 @@ import { InvoiceStatus } from "@/types/globals";
 import { Calendar } from "lucide-react";
 import InvoiceStatusBadge from "@/components/custom/badges/invoice-status-badge";
 import money from "@/lib/money";
+import PaymentList from "./_components/payment-list";
 
 type PageProps = {
   params: { uuid: string };
@@ -82,6 +83,8 @@ export default async function Page({ params }: PageProps) {
           </div>
         </div>
       </main>
+
+      <PaymentList />
     </main>
   );
 }
